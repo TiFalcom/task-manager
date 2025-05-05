@@ -14,7 +14,6 @@ class TaskManager:
     def add_task(cls, task : str):
         new_task = Task(title=task)
         cls.session.add(new_task)
-        print(f"Task '{new_task}' added to the database.")
         cls._commit_close_session()
         return task
 
@@ -26,8 +25,12 @@ class TaskManager:
             cls._commit_close_session()
             return task
         else:
+            cls._commit_close_session()
             return None
+        
 
     @classmethod
     def list_tasks(cls):
-        return cls.session.query(Task).all()
+        tasks = cls.session.query(Task).all()
+        cls._commit_close_session()
+        return tasks
