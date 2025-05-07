@@ -1,6 +1,10 @@
 # task-manager
 
-
+Configure your .env file with the following variables:  
+- POSTGRES_USER  
+- POSTGRES_PASSWORD  
+- POSTGRES_DB  
+- DATABASE_URL  
 
 task_manager/  
 │  

@@ -1,6 +1,6 @@
-from app.crud.task import TaskManager
-from app.database import create_tables
 from fastapi import FastAPI
+from app.database import create_tables
+from app.routers import task
 
 app = FastAPI()
 
@@ -12,19 +12,4 @@ def startup():
 def read_root():
     return {'message': 'Pong!'}
 
-@app.post('/tasks/add')
-def add_task(task: str):
-    TaskManager.add_task(task)
-    return {'message': f'Task "{task}" added.'}
-
-@app.delete('/tasks/remove')
-def remove_task(task: str):
-    response = TaskManager.remove_task(task)
-    if response is None:
-        return {'message': f'Task "{task}" not found.'}
-    return {'message': f'Task "{task}" removed.'}
-
-@app.get('/tasks/list')
-def list_tasks():
-    tasks = TaskManager.list_tasks()
-    return {'tasks': tasks}
+app.include_router(task.router, prefix="/task", tags=["Task"])

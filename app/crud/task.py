@@ -1,36 +1,28 @@
-from app.database import engine, Task
-from sqlalchemy.orm import sessionmaker
+from app.models.task import Task
+from app.database import get_session
 
 class TaskManager:
-    session = sessionmaker(bind=engine)()
 
-    @classmethod
-    def _commit_close_session(cls):
-        """Commit the session and close it."""
-        cls.session.commit()
-        cls.session.close()
-
-    @classmethod
-    def add_task(cls, task : str):
-        new_task = Task(title=task)
-        cls.session.add(new_task)
-        cls._commit_close_session()
+    @staticmethod
+    def add_task(task: str):
+        with get_session() as session:
+            new_task = Task(title=task)
+            session.add(new_task)
         return task
 
-    @classmethod
-    def remove_task(cls, task : str):
-        task_to_remove = cls.session.query(Task).filter(Task.title == task).first()
-        if task_to_remove:
-            cls.session.delete(task_to_remove)
-            cls._commit_close_session()
-            return task
-        else:
-            cls._commit_close_session()
+    @staticmethod
+    def remove_task(task: str):
+        with get_session() as session:
+            task_to_remove = session.query(Task).filter(Task.title == task).first()
+            if task_to_remove:
+                session.delete(task_to_remove)
+                return task
             return None
-        
 
-    @classmethod
-    def list_tasks(cls):
-        tasks = cls.session.query(Task).all()
-        cls._commit_close_session()
-        return tasks
+    @staticmethod
+    def list_tasks():
+        with get_session() as session:
+            return [
+                {"id" : task.id, "title" : task.title} 
+                for task in session.query(Task).all()
+            ]
