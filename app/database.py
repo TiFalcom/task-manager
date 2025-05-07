@@ -4,6 +4,10 @@ from contextlib import contextmanager
 import os
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+# Prod database URL
+HEROKU_POSTGRESQL_NAVY_URL = os.getenv("HEROKU_POSTGRESQL_NAVY_URL")
+if DATABASE_URL is None:
+    DATABASE_URL = HEROKU_POSTGRESQL_NAVY_URL.replace("postgres://", "postgresql://")
 
 engine = create_engine(DATABASE_URL)
 Base = declarative_base()

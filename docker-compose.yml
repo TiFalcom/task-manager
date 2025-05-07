@@ -2,6 +2,7 @@ version: '3.0'
 
 services:
   task-manager:
+    env_file: .env
     build: .
     container_name: task-manager
     ports:
@@ -15,6 +16,7 @@ services:
 
   db:
     image: postgres:13
+    env_file: .env
     container_name: postgres-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
